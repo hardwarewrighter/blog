@@ -1,0 +1,45 @@
+---
+layout: page
+title: Hardware
+nav_title: Hardware
+permalink: /hardware/
+---
+
+{%- comment -%}
+  `site.categories` and `site.tags` are Jekyll built-ins, but `hardware:` is a
+  custom front matter array, so there is no site-wide index for it. Build one by
+  flattening every post's list and de-duplicating.
+{%- endcomment -%}
+
+{% assign all_hardware = site.posts | map: "hardware" | join: "," | split: "," | uniq | sort %}
+
+<div class="categories-page">
+  <p>Every post grouped by the board, adapter, or instrument it involves. Add
+  <code>hardware:</code> to a post's front matter and it shows up here.</p>
+
+  <div class="category-list">
+    {% for hw in all_hardware %}
+      {% assign hw_posts = site.posts | where_exp: "p", "p.hardware contains hw" %}
+      <a href="#{{ hw | slugify }}" class="category">{{ hw }} ({{ hw_posts.size }})</a>
+    {% endfor %}
+  </div>
+
+  <hr>
+
+  {% for hw in all_hardware %}
+    {% assign hw_posts = site.posts | where_exp: "p", "p.hardware contains hw" %}
+    <h2 id="{{ hw | slugify }}">{{ hw }}</h2>
+    <ul class="post-list">
+      {% for post in hw_posts %}
+        <li>
+          <span class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</span>
+          <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+
+  {% if all_hardware.size == 0 %}
+    <p><em>No posts carry a <code>hardware:</code> field yet.</em></p>
+  {% endif %}
+</div>

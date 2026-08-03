@@ -1,0 +1,78 @@
+---
+layout: default
+---
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
+    {%- include post-meta.html post=page show_author=true -%}
+
+    {%- if page.categories.size > 0 or page.tags.size > 0 or page.hardware.size > 0 or page.interfaces.size > 0 -%}
+    <div class="post-taxonomies">
+      {%- if page.categories.size > 0 -%}
+        <span class="post-categories">
+          {%- for category in page.categories -%}
+            <a href="{{ '/categories/' | relative_url }}#{{ category | slugify }}" class="category">{{ category }}</a>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+      {%- if page.hardware.size > 0 -%}
+        <span class="post-hardware">
+          {%- for hw in page.hardware -%}
+            <a href="{{ '/hardware/' | relative_url }}#{{ hw | slugify }}" class="tag">{{ hw }}</a>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+      {%- if page.interfaces.size > 0 -%}
+        <span class="post-interfaces">
+          {%- for iface in page.interfaces -%}
+            <a href="{{ '/interfaces/' | relative_url }}#{{ iface | slugify }}" class="tag">{{ iface }}</a>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+      {%- if page.tags.size > 0 -%}
+        <span class="post-tags">
+          {%- for tag in page.tags -%}
+            <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}" class="tag">{{ tag }}</a>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+    </div>
+    {%- endif -%}
+  </header>
+
+  {%- unless page.toc == false -%}
+    {%- include toc.html -%}
+  {%- endunless -%}
+
+  <div class="post-content e-content" itemprop="articleBody">
+    {{ content }}
+  </div>
+
+  {%- comment -%}
+    Posts sharing a `hardware:` value form a collection with no manual curation
+    --- this is what replaces the old explicit series metadata.
+  {%- endcomment -%}
+  {%- if page.hardware.size > 0 -%}
+    {%- assign primary = page.hardware | first -%}
+    {%- assign related = site.posts | where_exp: "p", "p.hardware contains primary" -%}
+    {%- if related.size > 1 -%}
+    <div class="related-hardware">
+      <h2>More on {{ primary }}</h2>
+      <ul class="post-list">
+        {%- for p in related limit: 10 -%}
+          {%- unless p.url == page.url -%}
+          <li>
+            <span class="post-meta">{{ p.date | date: "%B %-d, %Y" }}</span>
+            <a class="post-link" href="{{ p.url | relative_url }}">{{ p.title | escape }}</a>
+          </li>
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
+      <p><a href="{{ '/hardware/' | relative_url }}#{{ primary | slugify }}">All {{ primary }} posts &rarr;</a></p>
+    </div>
+    {%- endif -%}
+  {%- endif -%}
+
+  <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
+</article>

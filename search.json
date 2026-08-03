@@ -1,0 +1,32 @@
+---
+layout: null
+---
+{%- comment -%}
+  Client-side search index, consumed by _includes/search.html via
+  simple-jekyll-search.
+
+  Note: the search library matches against EVERY key in these objects --- its
+  `searchFields` option is a no-op. So only emit fields that are meaningful to
+  match on. `date` is deliberately absent: with it in the object, searching
+  "august" returned every post published in August.
+
+  `content` is truncated. The full bodies of a few hundred posts make this file
+  multi-megabyte, and it is fetched on every visit to /search/.
+{%- endcomment -%}
+[
+  {% for post in site.posts %}
+    {
+      "title"      : {{ post.title | jsonify }},
+      "url"        : "{{ post.url | relative_url }}",
+      "categories" : {{ post.categories | join: ", " | jsonify }},
+      "tags"       : {{ post.tags | join: ", " | jsonify }},
+      "hardware"   : {{ post.hardware | join: ", " | jsonify }},
+      "interfaces" : {{ post.interfaces | join: ", " | jsonify }},
+      "status"     : {{ post.status | default: "" | jsonify }},
+      "difficulty" : {{ post.difficulty | default: "" | jsonify }},
+      "keywords"   : {{ post.keywords | default: "" | jsonify }},
+      "abstract"   : {{ post.abstract | default: "" | jsonify }},
+      "content"    : {{ post.content | strip_html | normalize_whitespace | truncatewords: 400 | jsonify }}
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+]

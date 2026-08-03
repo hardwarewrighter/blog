@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# Create a new draft in _drafts/ from the standard front matter template.
+#
+#   scripts/new-post "USB UART Adapter Comparison"
+#
+# Drafts have no date in the filename. The date is assigned by scripts/publish
+# when the post is promoted to _posts/.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+if [[ $# -lt 1 ]]; then
+  echo "usage: scripts/new-post \"Post Title\"" >&2
+  exit 1
+fi
+
+title="$1"
+
+# Lowercase, strip anything that is not alphanumeric or space, spaces to dashes.
+slug=$(printf '%s' "$title" \
+  | tr '[:upper:]' '[:lower:]' \
+  | sed -E 's/[^a-z0-9 ]//g; s/ +/-/g; s/^-+|-+$//g')
+
+if [[ -z "$slug" ]]; then
+  echo "error: title produced an empty slug" >&2
+  exit 1
+fi
+
+file="_drafts/${slug}.md"
+
+if [[ -e "$file" ]]; then
+  echo "error: $file already exists" >&2
+  exit 1
+fi
+
+mkdir -p _drafts
+
+cat > "$file" <<EOF
+---
+layout: post
+title: "${title}"
+categories: []
+tags: []
+keywords: ""
+author: Mike Wright
+abstract: ""
+hardware: []
+interfaces: []
+status: active
+difficulty: intermediate
+toc: true
+---
+
+<!--
+  categories:  broad bucket, e.g. [boards], [lab], [reviews], [bench-notes]
+  tags:        fine grained, e.g. [ft232h, uart, usb]
+  hardware:    boards/devices this post is about, e.g. [cor24-tb, ft232h]
+  interfaces:  protocols involved, e.g. [uart, spi, jtag]
+  difficulty:  beginner | intermediate | advanced
+  abstract:    one or two sentences; used by search, feed, and index pages
+-->
+
+Opening paragraph. What this post is about and why it matters.
+
+<!--more-->
+
+## First Section
+
+Body.
+EOF
+
+echo "created $file"
+echo "preview with: scripts/preview"
+echo "publish with: scripts/publish $slug"

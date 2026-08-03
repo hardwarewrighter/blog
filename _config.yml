@@ -1,0 +1,61 @@
+# Site settings
+title: "Hardware Wrighter"
+email: ""
+description: "Hardware projects, tools, experiments, reviews, and lab notes."
+baseurl: ""
+url: "https://blog.hardwarewrighter.com"
+github_username: hardwarewrighter
+author: Mike Wright
+
+# Build settings
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Permalink structure
+permalink: /:year/:month/:day/:title/
+
+# Excerpt settings
+excerpt_separator: <!--more-->
+show_excerpts: true
+
+# Minima theme settings
+minima:
+  skin: auto
+  date_format: "%B %-d, %Y"
+  social_links:
+    - { platform: github, user_url: "https://github.com/hardwarewrighter" }
+
+# Header pages, in nav order
+header_pages:
+  - about.markdown
+  - abstracts.html
+  - hardware.html
+  - interfaces.html
+  - categories.html
+  - tags.html
+  - archive.html
+  - search.html
+
+# Default front matter
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Mike Wright"
+
+# Exclude from processing
+exclude:
+  - .bundle/
+  - .jekyll-cache/
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - docs/
+  - node_modules/
+  - scripts/
+  - vendor/

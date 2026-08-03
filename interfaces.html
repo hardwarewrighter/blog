@@ -1,0 +1,40 @@
+---
+layout: page
+title: Interfaces
+nav_title: Interfaces
+permalink: /interfaces/
+---
+
+{% assign all_interfaces = site.posts | map: "interfaces" | join: "," | split: "," | uniq | sort %}
+
+<div class="categories-page">
+  <p>Every post grouped by the protocol it involves --- UART, SPI, I&sup2;C, JTAG,
+  USB, and so on. Add <code>interfaces:</code> to a post's front matter and it
+  shows up here.</p>
+
+  <div class="category-list">
+    {% for iface in all_interfaces %}
+      {% assign iface_posts = site.posts | where_exp: "p", "p.interfaces contains iface" %}
+      <a href="#{{ iface | slugify }}" class="category">{{ iface }} ({{ iface_posts.size }})</a>
+    {% endfor %}
+  </div>
+
+  <hr>
+
+  {% for iface in all_interfaces %}
+    {% assign iface_posts = site.posts | where_exp: "p", "p.interfaces contains iface" %}
+    <h2 id="{{ iface | slugify }}">{{ iface }}</h2>
+    <ul class="post-list">
+      {% for post in iface_posts %}
+        <li>
+          <span class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</span>
+          <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+
+  {% if all_interfaces.size == 0 %}
+    <p><em>No posts carry an <code>interfaces:</code> field yet.</em></p>
+  {% endif %}
+</div>

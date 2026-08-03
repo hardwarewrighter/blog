@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# Front matter lint. Runs before every publish and in CI.
+#
+# Checks only what actually breaks the site or the indexes if it is missing.
+# Resist adding rules here that encode editorial preference rather than breakage.
+set -uo pipefail
+
+cd "$(dirname "$0")/.."
+
+errors=0
+warnings=0
+
+err()  { echo "  ERROR   $*"; errors=$((errors + 1)); }
+warn() { echo "  warning $*"; warnings=$((warnings + 1)); }
+
+# Read a front matter scalar. Returns empty if absent.
+fm() { sed -n "/^---[[:space:]]*$/,/^---[[:space:]]*$/p" "$2" | grep -m1 "^$1:" | sed "s/^$1:[[:space:]]*//"; }
+
+shopt -s nullglob
+posts=(_posts/*.md)
+
+if [[ ${#posts[@]} -eq 0 ]]; then
+  echo "no posts yet"
+  exit 0
+fi
+
+echo "validating ${#posts[@]} post(s)"
+
+for f in "${posts[@]}"; do
+  base=$(basename "$f")
+
+  head -1 "$f" | grep -q '^---' || { err "$base: no front matter"; continue; }
+
+  for field in title date abstract; do
+    [[ -n "$(fm "$field" "$f")" ]] || err "$base: missing $field"
+  done
+
+  for field in categories tags; do
+    [[ -n "$(fm "$field" "$f")" ]] || warn "$base: missing $field (it will not appear in that index)"
+  done
+
+  # Filename date and front matter date must agree, or the permalink and the
+  # sort order disagree with each other.
+  file_date="${base:0:10}"
+  fm_date=$(fm date "$f" | cut -d' ' -f1)
+  if [[ -n "$fm_date" && "$file_date" != "$fm_date" ]]; then
+    err "$base: filename date $file_date != front matter date $fm_date"
+  fi
+
+  # A post dated later in the day than the publish cron slips a day.
+  fm_time=$(fm date "$f" | awk '{print $2}')
+  if [[ -n "$fm_time" && "$fm_time" > "00:20:00" ]]; then
+    warn "$base: time $fm_time is after the 00:20 publish cron; it will go live a day late"
+  fi
+done
+
+echo
+if [[ $errors -gt 0 ]]; then
+  echo "$errors error(s), $warnings warning(s)"
+  exit 1
+fi
+echo "ok ($warnings warning(s))"

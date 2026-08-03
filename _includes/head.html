@@ -1,0 +1,38 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="{{ '/favicon.ico' | relative_url }}">
+  {%- seo -%}
+  <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
+  {%- feed_meta -%}
+  {%- if jekyll.environment == 'production' and site.google_analytics -%}
+    {%- include google-analytics.html -%}
+  {%- endif -%}
+
+  <!-- Applied before first paint so the page does not flash the wrong theme.
+       Must stay in sync with assets/js/theme-toggle.js. -->
+  <script>
+    (function() {
+      var stored = localStorage.getItem('hw-theme');
+      var theme = stored;
+      if (!theme) {
+        theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <!-- Same idea for font size. The default and the target element must match
+       assets/js/font-size.js exactly, or the two fight over the value. -->
+  <script>
+    (function() {
+      var DEFAULT_SIZE = 100;
+      var stored = parseInt(localStorage.getItem('hw-font-size'), 10);
+      var size = isNaN(stored) ? DEFAULT_SIZE : stored;
+      document.documentElement.style.fontSize = size + '%';
+    })();
+  </script>
+  <script src="{{ '/assets/js/theme-toggle.js' | relative_url }}" defer></script>
+  <script src="{{ '/assets/js/font-size.js' | relative_url }}" defer></script>
+  <script src="{{ '/assets/js/preferences.js' | relative_url }}" defer></script>
+</head>
