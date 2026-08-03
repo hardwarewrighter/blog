@@ -49,6 +49,17 @@ jobs:
         env:
           JEKYLL_ENV: production
 
+      # A site with zero published posts builds fine while post.html and
+      # home.html are badly broken, because nothing ever renders them. Build
+      # again with drafts so the post templates are actually exercised.
+      - name: Smoke-test post templates against drafts
+        run: |
+          bundle exec jekyll build --drafts --future --destination _site_drafts
+          if ! find _site_drafts -path '*/20*/*' -name index.html | grep -q .; then
+            echo "::warning::no draft rendered as a post; templates not exercised"
+          fi
+          rm -rf _site_drafts
+
       - name: Check the build produced the expected pages
         run: |
           missing=0
