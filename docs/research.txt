@@ -1,0 +1,1126 @@
+ChatGPT Pro
+
+consider all three github repos in this org: 
+https://github.com/orgs/software-wrighter-lab/repositories and come up with a plan to consolidate this into one new "hardwarewrighter" blog repo.  No need to preserve content (posts) or index entries for paper, code to posts, no need to preserve lists, series.  What I want to do is: (a) reuse the structure and style, search mechanism, sort, index mechanisms, About page and other navigation menu items, (b) simplify the editing, drafting, preview, and publishing process to one repo, (c) start creating content (posts) of a hardware related nature, e.g., USB UART comparisons, COR24-TB board, my hardware lab setup, tools and gizmos I use, etc.
+
+
+Given your goals and the fact that you do not care about preserving historical posts or URL compatibility, I would treat this as a greenfield redesign, not a migration.
+
+That changes the priorities considerably.
+
+Goals
+Keep:
+
+Site look and feel
+
+Navigation
+
+Search
+
+Sorting
+
+Index generation
+
+About page
+
+Tags/categories (if useful)
+
+Build/deploy automation
+
+Discard:
+
+Existing post history
+
+Series metadata
+
+Paper→code mappings
+
+Legacy indexes
+
+Migration compatibility
+
+Old URL structure
+
+The result should feel like Software Wrighter, but be much easier to maintain.
+
+Repository layout
+I'd create a single repository
+
+hardwarewrighter/
+rather than
+
+hardwarewrighter.github.io
+unless you specifically want the GitHub Pages naming convention.
+
+Internally:
+
+/
+├── content/
+│   ├── posts/
+│   ├── pages/
+│   ├── images/
+│   └── downloads/
+│
+├── templates/
+│
+├── static/
+│
+├── scripts/
+│   new-post
+│   preview
+│   publish
+│
+├── config/
+│
+├── search/
+│
+├── index/
+│
+├── docs/
+│
+└── .github/
+Everything lives in one repository.
+
+Simplify author workflow
+Today many static sites require:
+
+draft
+edit
+update lists
+update series
+update tags
+preview
+rebuild
+publish
+I'd reduce it to
+
+new-post
+
+↓
+
+edit markdown
+
+↓
+
+preview
+
+↓
+
+publish
+Nothing else.
+
+Every post
+One markdown file
+
+content/posts/
+
+2026-08-02-cor24-tb-overview.md
+Front matter:
+
+---
+title:
+date:
+tags:
+summary:
+cover:
+draft:
+---
+Nothing more.
+
+No manual indexes.
+
+No manual series.
+
+No manual menus.
+
+Automatically generated
+Everything else becomes generated.
+
+Generate automatically:
+
+Home page
+
+Recent posts
+
+Tag pages
+
+Hardware pages
+
+Search index
+
+RSS
+
+Sitemap
+
+Archive
+
+Categories
+
+No hand editing.
+
+Search
+Reuse the existing search concept.
+
+I'd modernize slightly.
+
+Generate
+
+search.json
+during build.
+
+Client side search.
+
+Index:
+
+title
+
+summary
+
+body
+
+tags
+
+hardware
+
+vendor
+
+category
+Searching
+
+uart
+finds
+
+USB UART Comparison
+
+FT232H
+
+CP2102
+
+CH340
+
+PL2303
+Searching
+
+cor24
+finds
+
+board overview
+
+assembler
+
+debugger
+
+FPGA
+
+loader
+
+Categories
+Instead of Software Wrighter categories, I'd use hardware-first organization.
+
+Example:
+
+Boards
+
+Microcontrollers
+
+FPGAs
+
+USB
+
+Networking
+
+Storage
+
+Power
+
+Lab
+
+Test Equipment
+
+Tools
+
+Retro Computing
+
+Projects
+
+Reviews
+
+Tutorials
+
+Bench Notes
+Tags
+Fine grained.
+
+Example
+
+ft232h
+
+cp2102
+
+waveshare
+
+jtag
+
+uart
+
+spi
+
+i2c
+
+cor24
+
+lattice
+
+altera
+
+quartus
+
+rust
+
+linux
+Navigation
+I'd simplify the menus to something like
+
+Home
+
+Projects
+
+Hardware
+
+Tutorials
+
+Reviews
+
+Lab Notes
+
+Downloads
+
+About
+Hardware pages
+This is something I think would be valuable.
+
+Rather than only blog posts, maintain evergreen hardware pages.
+
+Example
+
+Hardware
+
+ ├── COR24-TB
+
+ ├── USB UART adapters
+
+ ├── Logic analyzers
+
+ ├── Oscilloscopes
+
+ ├── Bench power supplies
+
+ ├── FPGA boards
+
+ ├── Raspberry Pi
+
+ └── Workstations
+Each hardware page links to related posts.
+
+Series become collections
+Rather than explicit series metadata.
+
+Example
+
+COR24-TB
+automatically collects
+
+Board overview
+
+Assembler
+
+Loader
+
+JTAG
+
+Debugger
+
+Scheme
+
+Lisp
+
+Pascal
+
+Fortran
+because they share
+
+hardware: cor24-tb
+Lab notebook
+One thing Software Wrighter doesn't really emphasize:
+
+I'd add
+
+Bench Notes
+Very short posts.
+
+Example
+
+USB UART adapter benchmark
+
+5 minute read
+or
+
+Power supply repair
+
+3 minute read
+These encourage frequent publishing.
+
+Evergreen pages
+Some things shouldn't be blog posts.
+
+Examples:
+
+My Hardware Lab
+
+Workbench
+
+Current Projects
+
+Equipment Inventory
+
+Recommended Tools
+
+Favorite Components
+
+Software Stack
+
+FPGA Toolchains
+Suggested first content
+I'd start with cornerstone articles.
+
+Hardware Lab Tour
+
+USB UART Adapter Comparison
+
+COR24-TB Overview
+
+Why I Built a COR24 Toolchain
+
+FPGA Development Workflow
+
+JTAG Adapters Compared
+
+USB Logic Analyzer Review
+
+Workbench Power Distribution
+
+My Linux Hardware Development Setup
+
+Rust Embedded Development Environment
+
+Downloads
+Every post can have
+
+downloads/
+
+    source
+
+    schematics
+
+    firmware
+
+    gerbers
+
+    STL
+
+    PDFs
+linked automatically.
+
+Images
+Instead of random image locations.
+
+images/
+
+    posts/
+
+    hardware/
+
+    diagrams/
+
+    screenshots/
+Build process
+I'd make the build almost invisible.
+
+./scripts/new-post
+
+↓
+
+edit markdown
+
+↓
+
+./scripts/preview
+
+↓
+
+git push
+GitHub Actions
+
+↓
+
+Deploy automatically
+
+Longer-term direction
+Because I know where many of your projects are headed, I'd actually evolve this beyond a traditional blog into a knowledge base with a blog front-end.
+
+Think of it as three interconnected content types:
+
+Type	Purpose	Lifetime
+Bench Notes	Short updates and experiments	Days to weeks
+Articles	Tutorials, reviews, deep dives	Months to years
+Hardware Reference	Living documentation for boards, adapters, lab equipment, and projects	Years
+For example, a COR24-TB reference page would continuously improve over time, while individual posts document milestones such as the assembler, JTAG loader, Scheme REPL, or hardware demonstrations.
+
+One addition I'd strongly recommend
+Given your breadth of hardware projects, I would add one piece of structured metadata that Software Wrighter probably doesn't have today:
+
+hardware:
+  - cor24-tb
+  - ft232h
+
+interfaces:
+  - uart
+  - spi
+  - jtag
+
+status: active
+difficulty: intermediate
+This enables automatic pages such as:
+
+"Everything related to COR24-TB"
+
+"Everything involving JTAG"
+
+"All beginner tutorials"
+
+"All active projects"
+
+without any manual curation.
+
+I think that would make Hardware Wrighter feel less like a chronological blog and more like a searchable engineering notebook, while preserving the clean navigation, search, and indexing experience that you already like from Software Wrighter.
+
+
+what I have is this: https://github.com/orgs/hardwarewrighter/repositories - an organization.  I'd like the blog repo to have blog in the name.  What repo should I create?  How do I set up publishing to the blog without the github.io (I own hardwarewrighter.com domain, but it is parked).  Can I point my hardwarewrighter.com/blog to the live blog hosted via github actions/pages?  How?
+
+Worked for 16s
+Recommendation
+Create this public repository:
+
+hardwarewrighter/hardwarewrighter-blog
+Use:
+
+https://blog.hardwarewrighter.com/
+as its public URL.
+
+This gives you:
+
+A descriptive repository name containing blog
+
+One repository for content, theme, generated indexes, search, preview, and deployment
+
+GitHub Actions deployment to GitHub Pages
+
+No visitor-facing github.io URL
+
+Freedom to use hardwarewrighter.com later for a broader project/home page
+
+GitHub Pages supports a custom subdomain such as blog.example.com, and GitHub recommends subdomains because they can use a stable DNS CNAME. 
+
+Why not hardwarewrighter.com/blog directly?
+DNS maps hostnames, not URL paths.
+
+It can route:
+
+hardwarewrighter.com
+blog.hardwarewrighter.com
+www.hardwarewrighter.com
+It cannot independently route:
+
+hardwarewrighter.com/blog
+to GitHub Pages while leaving the rest of hardwarewrighter.com parked elsewhere.
+
+Furthermore, GitHub Pages custom-domain configuration accepts an apex domain or subdomain—not a domain plus a path. Supported forms include example.com, www.example.com, and blog.example.com. 
+
+Therefore this will not work as a Pages custom domain:
+
+hardwarewrighter.com/blog
+But these will:
+
+hardwarewrighter.com
+www.hardwarewrighter.com
+blog.hardwarewrighter.com
+Preferred architecture
+GitHub organization
+└── hardwarewrighter
+    └── hardwarewrighter-blog
+        ├── source content
+        ├── templates/style
+        ├── search/index generation
+        ├── local preview tools
+        └── GitHub Actions deployment
+
+Public URLs
+├── hardwarewrighter.com        future home/project site
+└── blog.hardwarewrighter.com   GitHub Pages blog
+This cleanly separates your brand’s root site from the publishing implementation.
+
+You can make:
+
+https://hardwarewrighter.com/blog
+redirect to:
+
+https://blog.hardwarewrighter.com/
+That redirect can later be provided by whatever hosts the apex site—Cloudflare Pages, Netlify, a small web server, or your registrar if it offers path redirects.
+
+Repository creation
+Create:
+
+Organization: hardwarewrighter
+Repository:   hardwarewrighter-blog
+Visibility:   Public
+Default:      main
+You do not need to name it:
+
+hardwarewrighter.github.io
+That special name is needed only for the organization-level Pages site whose default address is the root hardwarewrighter.github.io. An ordinary project Pages site can live in any repository and normally receives a default path based on the repository name. 
+
+Before configuring the custom domain, the project site would normally appear at:
+
+https://hardwarewrighter.github.io/hardwarewrighter-blog/
+After setting the repository’s custom domain, the canonical public address becomes:
+
+https://blog.hardwarewrighter.com/
+GitHub Actions publishing
+In the new repository, select:
+
+Settings
+  → Pages
+    → Build and deployment
+      → Source
+        → GitHub Actions
+GitHub supports either branch-based publication or a custom Actions workflow. For your consolidated blog, Actions is preferable because you need to generate search data, indexes, archives, and final static output before deployment. 
+
+The deployment flow should be:
+
+push to main
+    ↓
+checkout
+    ↓
+install/build site generator
+    ↓
+generate indexes and search data
+    ↓
+build static site
+    ↓
+upload Pages artifact
+    ↓
+deploy Pages artifact
+A generic workflow looks like this:
+
+name: Deploy blog
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      # Replace this with the selected generator's build commands.
+      - name: Build site
+        run: |
+          ./scripts/build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+The published artifact must contain index.html at its top level. 
+
+For example:
+
+dist/
+├── index.html
+├── about/
+│   └── index.html
+├── posts/
+├── tags/
+├── search/
+├── search.json
+├── assets/
+├── sitemap.xml
+└── feed.xml
+DNS configuration
+At the DNS provider currently parking hardwarewrighter.com, add:
+
+Type	Name	Target
+CNAME	blog	hardwarewrighter.github.io
+The destination should be:
+
+hardwarewrighter.github.io
+not:
+
+hardwarewrighter.github.io/hardwarewrighter-blog
+and not:
+
+github.com/hardwarewrighter/hardwarewrighter-blog
+GitHub explicitly says that a custom subdomain CNAME should point to <organization>.github.io, excluding the repository name. 
+
+Then configure the Pages repository:
+
+hardwarewrighter/hardwarewrighter-blog
+  → Settings
+  → Pages
+  → Custom domain
+  → blog.hardwarewrighter.com
+Save it, wait for GitHub’s DNS check, and enable:
+
+Enforce HTTPS
+With a custom Actions workflow, you do not need to maintain a CNAME file in the generated site; GitHub’s current documentation says the Pages setting controls the custom domain and an existing CNAME file is ignored for Actions deployments. 
+
+Getting an exact /blog URL
+You have three realistic options.
+
+Option 1 — Redirect /blog to the subdomain
+hardwarewrighter.com/blog
+    → 301 redirect
+blog.hardwarewrighter.com/
+Benefits
+Simplest
+
+GitHub Pages remains directly supported
+
+No proxy complexity
+
+Search engines understand the permanent redirect
+
+Apex site and blog can be hosted independently
+
+Limitation
+The browser ultimately displays:
+
+blog.hardwarewrighter.com
+This is my recommendation.
+
+Option 2 — Reverse-proxy /blog
+Host hardwarewrighter.com through something capable of path routing, such as:
+
+Cloudflare Workers
+
+Cloudflare Pages with a Worker
+
+Netlify
+
+Vercel
+
+Your own nginx/Caddy server
+
+Then route:
+
+hardwarewrighter.com/blog/*
+to the GitHub Pages site.
+
+Conceptually:
+
+hardwarewrighter.com/blog/cor24-tb/
+        ↓
+proxy
+        ↓
+blog.hardwarewrighter.com/cor24-tb/
+Benefits
+Browser retains the exact /blog address
+
+Apex site can contain other sections
+
+Risks
+Asset and canonical URLs must use /blog/ as their base
+
+Generated links must be path-aware
+
+Search indexes, RSS URLs, CSS, JavaScript, images, and pagination must all account for the prefix
+
+GitHub Pages HTTPS/CDN is now behind your proxy
+
+More places can fail
+
+A redirect is much less fragile than a reverse proxy.
+
+Option 3 — Use GitHub’s organization-site inheritance
+GitHub supports a custom domain on an organization site and can place project sites beneath it. For example, if the organization site uses www.example.com, a repository called blog can appear beneath it as www.example.com/blog. 
+
+That would require:
+
+hardwarewrighter/hardwarewrighter.github.io
+hardwarewrighter/blog
+with the custom domain assigned to the organization site.
+
+Then the project site can be:
+
+https://hardwarewrighter.com/blog/
+However, this approach requires the special:
+
+hardwarewrighter.github.io
+organization-site repository—the thing you were hoping to avoid. It also means the apex-domain Pages configuration affects the organization’s other project sites.
+
+This architecture is valid, but I would not choose it merely to avoid using a blog subdomain.
+
+Final choice
+Use:
+
+Repository:
+hardwarewrighter/hardwarewrighter-blog
+
+Canonical URL:
+https://blog.hardwarewrighter.com/
+
+Convenience redirect:
+https://hardwarewrighter.com/blog
+    → https://blog.hardwarewrighter.com/
+Keep the root domain available for a later lightweight Hardware Wrighter portal:
+
+hardwarewrighter.com
+├── Blog
+├── Projects
+├── GitHub
+├── Hardware inventory
+├── COR24
+└── About
+The blog can then remain a completely self-contained repository and publishing system without constraining what hardwarewrighter.com becomes later.
+
+
+okay, blog.hardwarewrighter.com/ is fine, no hard requirement for /blog URL.  simplify verifiable steps: I want some placeholder content using gh pages in github.com/hardwarewrighter/blog/pages and I want the repo to be just "blog" (vs. github.com/hardwarewrighter/hardwarewrighter{-blog} or similar).  I want to see the content initially at a {something?}hardwarewrighter.github.io and later redirect blog.hardwarewrighter.com to that (or change that to the custom URL).  How do I do this step by step?  We can start with a simple index.html landing page to stand in for the dynamic blog and reconfigure later.  Does this make sense?
+
+Yes. Start with the simplest possible project Pages site, using the repository:
+
+hardwarewrighter/blog
+Its initial public URL will be:
+
+https://hardwarewrighter.github.io/blog/
+Later, after adding the custom domain, GitHub Pages will serve the same repository at:
+
+https://blog.hardwarewrighter.com/
+A repository named blog is a GitHub Pages project site, so GitHub adds /blog/ to its default github.io URL. Only a repository named hardwarewrighter.github.io would publish at the root https://hardwarewrighter.github.io/. 
+
+Phase 1: Create and publish the placeholder
+1. Create the repository
+In the hardwarewrighter organization:
+
+Open New repository.
+
+Set owner to hardwarewrighter.
+
+Set repository name to:
+
+blog
+Make it Public.
+
+Optionally initialize it with a README.
+
+Create the repository.
+
+GitHub Pages is available for public repositories in GitHub Free organizations. 
+
+The repository URL will be:
+
+https://github.com/hardwarewrighter/blog
+2. Add a simple index.html
+At the root of the main branch, create:
+
+index.html
+For example:
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hardware Wrighter</title>
+  <meta
+    name="description"
+    content="Hardware projects, tools, experiments, reviews, and lab notes."
+  >
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: system-ui, sans-serif;
+    }
+
+    body {
+      max-width: 52rem;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+      line-height: 1.6;
+    }
+
+    header {
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      margin-bottom: 0.25rem;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+    }
+
+    .tagline {
+      font-size: 1.25rem;
+      opacity: 0.75;
+    }
+
+    section {
+      margin-top: 2.5rem;
+    }
+
+    footer {
+      margin-top: 4rem;
+      padding-top: 1rem;
+      border-top: 1px solid;
+      opacity: 0.65;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Hardware Wrighter</h1>
+    <p class="tagline">
+      Hardware projects, tools, experiments, reviews, and lab notes.
+    </p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Coming soon</h2>
+      <p>
+        This site will document embedded systems, FPGA boards, test equipment,
+        adapters, development tools, and projects from the Hardware Wrighter lab.
+      </p>
+    </section>
+
+    <section>
+      <h2>Planned topics</h2>
+      <ul>
+        <li>USB UART, SPI, I²C, and JTAG adapter comparisons</li>
+        <li>COR24-TB hardware and software projects</li>
+        <li>Hardware lab systems and equipment</li>
+        <li>FPGA and embedded development workflows</li>
+        <li>Tools, gizmos, repairs, and experiments</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Hardware Wrighter</p>
+  </footer>
+</body>
+</html>
+Commit it directly to main.
+
+The repository root should initially look like:
+
+blog/
+├── index.html
+└── README.md
+3. Enable GitHub Pages
+Open:
+
+https://github.com/hardwarewrighter/blog/settings/pages
+Then configure:
+
+Build and deployment
+Source: Deploy from a branch
+Branch: main
+Folder: / (root)
+Click Save.
+
+This is simpler than GitHub Actions for the placeholder stage. GitHub Pages can publish static HTML directly from a selected branch and directory. 
+
+You do not need:
+
+A workflow file
+
+Jekyll
+
+Node
+
+Rust
+
+A docs/ directory
+
+A special Pages branch
+
+A CNAME file yet
+
+4. Verify the deployment
+After the Pages deployment completes, visit:
+
+https://hardwarewrighter.github.io/blog/
+The Pages settings screen should also show a message similar to:
+
+Your site is live at https://hardwarewrighter.github.io/blog/
+GitHub Pages project sites use this URL form:
+
+https://<owner>.github.io/<repository>/
+Therefore hardwarewrighter/blog becomes https://hardwarewrighter.github.io/blog/. 
+
+You can also verify these URLs:
+
+https://hardwarewrighter.github.io/blog/index.html
+https://hardwarewrighter.github.io/blog/
+Both should display the placeholder.
+
+Phase 2: Point blog.hardwarewrighter.com to it
+Do this only after the default GitHub Pages URL works.
+
+5. Add the DNS record
+At the DNS provider managing hardwarewrighter.com, add:
+
+Record	Name	Target
+CNAME	blog	hardwarewrighter.github.io
+Depending on your DNS provider, the Name or Host field may be entered as either:
+
+blog
+or:
+
+blog.hardwarewrighter.com
+The target must be:
+
+hardwarewrighter.github.io
+Do not use:
+
+hardwarewrighter.github.io/blog
+A DNS CNAME points to a hostname and cannot contain a URL path. GitHub specifically says that a Pages subdomain CNAME should point to <organization>.github.io, without the repository name. 
+
+6. Add the custom domain in GitHub
+Return to:
+
+https://github.com/hardwarewrighter/blog/settings/pages
+Under Custom domain, enter:
+
+blog.hardwarewrighter.com
+Click Save.
+
+Because you are currently publishing from a branch, GitHub will normally add a file named:
+
+CNAME
+to the root of the publishing branch. Its complete contents will be:
+
+blog.hardwarewrighter.com
+This is expected for branch-based Pages publishing. 
+
+Your repository will then look approximately like:
+
+blog/
+├── CNAME
+├── index.html
+└── README.md
+7. Wait for the DNS check and enable HTTPS
+GitHub will check the DNS configuration. Once it succeeds, enable:
+
+Enforce HTTPS
+Then verify:
+
+https://blog.hardwarewrighter.com/
+GitHub will provision the TLS certificate after the DNS record is recognized. 
+
+What happens to the old URL?
+Once the custom domain is configured, the canonical address becomes:
+
+https://blog.hardwarewrighter.com/
+The former project URL:
+
+https://hardwarewrighter.github.io/blog/
+will generally redirect to the configured custom domain.
+
+You are therefore changing the public address, not maintaining two independent copies.
+
+Phase 3: Replace the placeholder with the real blog
+Later, the repository can evolve from:
+
+index.html
+into:
+
+blog/
+├── content/
+│   ├── posts/
+│   └── pages/
+├── static/
+├── templates/
+├── scripts/
+├── .github/
+│   └── workflows/
+│       └── pages.yml
+└── ...
+At that point, change Pages from:
+
+Deploy from a branch
+to:
+
+GitHub Actions
+The workflow would:
+
+Build the blog.
+
+Generate search and indexes.
+
+Produce a static output directory.
+
+Upload that directory as a Pages artifact.
+
+Deploy it.
+
+Your custom URL remains:
+
+https://blog.hardwarewrighter.com/
+With a custom GitHub Actions deployment, GitHub uses the Pages repository setting for the custom domain; an existing CNAME file is ignored and is not required. 
+
+Minimal checklist
+[ ] Create public hardwarewrighter/blog
+[ ] Add index.html to main
+[ ] Settings → Pages
+[ ] Select Deploy from a branch
+[ ] Select main and /(root)
+[ ] Verify https://hardwarewrighter.github.io/blog/
+[ ] Add DNS CNAME: blog → hardwarewrighter.github.io
+[ ] Set Pages custom domain to blog.hardwarewrighter.com
+[ ] Wait for DNS validation
+[ ] Enable Enforce HTTPS
+[ ] Verify https://blog.hardwarewrighter.com/
+This gives you a verifiable placeholder deployment now, with no commitment to a particular blog framework or build system.
+
+
