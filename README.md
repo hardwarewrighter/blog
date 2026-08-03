@@ -4,11 +4,10 @@ Hardware Wrighter — hardware projects, tools, experiments, reviews, and lab no
 
 ## Live site
 
-**https://hardwarewrighter.github.io/blog/**
+**https://blog.hardwarewrighter.com/**
 
-This is the temporary address. Once DNS for `hardwarewrighter.com` is configured,
-the canonical URL becomes `https://blog.hardwarewrighter.com/` and the github.io
-address will redirect to it.
+Served by GitHub Pages over HTTPS. The old project address,
+`https://hardwarewrighter.github.io/blog/`, redirects here.
 
 ## Status
 
