@@ -83,22 +83,23 @@ cron. A post dated later in the day is still in the future when the cron fires
 and slips to the next day. `scripts/publish` sets the time for you; `validate`
 warns if a hand-edited post gets it wrong.
 
-## Drafts and privacy
+## Drafts
 
 `_drafts/` is not built into the site. Drafts do not appear on the site, in
-search, in the feed, or in any index.
+search, in the feed, or in any index. They are unpublished --- which is the only
+property they need.
 
-**But this repository is public, so drafts in it are publicly readable.** Anyone
-can browse `_drafts/` on GitHub. Drafts are unpublished, not private.
+They are not hidden. This repository is public, so anyone can browse `_drafts/`
+on GitHub. That is a deliberate trade: the old setup used private repositories
+only because drafts were unpublished, not because anything in them was secret,
+and paying for that privacy with a second and third repository was not worth it.
 
-This is a constraint, not a choice: GitHub Pages only serves from private
-repositories on a paid plan, and the `hardwarewrighter` org is on the free plan.
-Making the repo private would take the site offline. Branches do not help ---
-every branch of a public repo is public too.
+Note the repo has to stay public regardless --- GitHub Pages serves from private
+repositories only on a paid plan, and the `hardwarewrighter` org is on Free.
+Branches would not change this; every branch of a public repo is public.
 
-If something genuinely must not be readable --- unannounced hardware, embargoed
-vendor material, personal notes --- keep it in a separate private repository and
-copy it in when it is ready to become a draft.
+For the rare thing that genuinely should not be readable yet, keep it as a local
+file outside the repo until it is ready to become a draft.
 
 ## Front matter
 
