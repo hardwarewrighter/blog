@@ -12,7 +12,7 @@ to push to.
 ## Where things live
 
 ```
-_drafts/          unpublished posts, undated, never built into the live site
+_drafts/          unpublished posts (drafts branch only), never built
 _posts/           published posts, YYYY-MM-DD-slug.md
 _layouts/         home.html, post.html
 _includes/        head, header, footer, toc, search, post-meta, toggles
@@ -27,8 +27,8 @@ docs/             this file and planning notes (excluded from the build)
 
 ### `scripts/new-post "USB UART Adapter Comparison"`
 
-Creates `_drafts/usb-uart-adapter-comparison.md` with the full front matter
-template. Drafts carry no date --- the date is assigned at publish time, so a
+Run from the `drafts` branch; it refuses elsewhere. Creates
+`_drafts/usb-uart-adapter-comparison.md` with the full front matter template. Drafts carry no date --- the date is assigned at publish time, so a
 draft that sits for three weeks does not publish with a stale date.
 
 ### `scripts/preview`
@@ -41,8 +41,10 @@ strictly more than the public site shows.
 
 ### `scripts/publish <slug> [YYYY-MM-DD]`
 
-Moves `_drafts/<slug>.md` to `_posts/<date>-<slug>.md`, sets the date in the
-front matter, runs `scripts/validate`, commits, and pushes. With no date it
+Moves `_drafts/<slug>.md` on `drafts` to `_posts/<date>-<slug>.md` on `main`,
+sets the date in the front matter, runs `scripts/validate`, commits, and pushes
+both branches. Refuses to run with uncommitted draft edits, which would
+otherwise publish a stale version. With no date it
 publishes today. With a future date it schedules (see below).
 
 `scripts/publish --list` shows what is currently in `_drafts/`.
@@ -83,20 +85,35 @@ cron. A post dated later in the day is still in the future when the cron fires
 and slips to the next day. `scripts/publish` sets the time for you; `validate`
 warns if a hand-edited post gets it wrong.
 
-## Drafts
+## Branches
 
-`_drafts/` is not built into the site. Drafts do not appear on the site, in
-search, in the feed, or in any index. They are unpublished --- which is the only
-property they need.
+Two long-lived branches:
 
-They are not hidden. This repository is public, so anyone can browse `_drafts/`
-on GitHub. That is a deliberate trade: the old setup used private repositories
-only because drafts were unpublished, not because anything in them was secret,
-and paying for that privacy with a second and third repository was not worth it.
+| Branch | Contains | Purpose |
+|--------|----------|---------|
+| `main` | Theme, config, scripts, `_posts/`, images | What GitHub Pages deploys, and what anyone browsing this repo sees first |
+| `drafts` | Everything on `main`, plus `_drafts/` | Where writing happens |
 
-Note the repo has to stay public regardless --- GitHub Pages serves from private
-repositories only on a paid plan, and the `hardwarewrighter` org is on Free.
-Branches would not change this; every branch of a public repo is public.
+`main` carries no drafts at all, so the default view of the repository is the
+published blog rather than works in progress. Day to day you live on `drafts`;
+`scripts/new-post` and `scripts/preview` both expect it.
+
+Publishing moves a post from `_drafts/` on `drafts` to `_posts/` on `main`.
+`scripts/publish` does this through a temporary git worktree, so your working
+copy never leaves the `drafts` branch and a running preview server is not
+disturbed. It then merges `main` back into `drafts`, keeping the draft branch
+current with the live theme and scripts.
+
+Theme, layout, and script changes belong on `main`. Merge them into `drafts`
+with `git merge main` --- because `main` never touches `_drafts/`, those merges
+are effectively always conflict-free.
+
+**Neither branch is private.** Every branch of a public repository is public, so
+`drafts` is visible to anyone who switches branches. Drafts are unpublished, not
+hidden --- the branch split is about what a casual visitor sees by default, not
+about secrecy. The repo has to stay public regardless: GitHub Pages serves
+private repositories only on a paid plan, and the `hardwarewrighter` org is on
+Free.
 
 For the rare thing that genuinely should not be readable yet, keep it as a local
 file outside the repo until it is ready to become a draft.

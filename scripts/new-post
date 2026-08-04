@@ -9,6 +9,14 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+# Drafts live on their own branch so main shows only published content.
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+if [[ "$branch" != "drafts" ]]; then
+  echo "error: you are on '$branch'; drafts live on the 'drafts' branch." >&2
+  echo "       git checkout drafts" >&2
+  exit 1
+fi
+
 if [[ $# -lt 1 ]]; then
   echo "usage: scripts/new-post \"Post Title\"" >&2
   exit 1

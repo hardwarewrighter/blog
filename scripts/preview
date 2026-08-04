@@ -32,6 +32,12 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+if [[ "$branch" != "drafts" && " ${flags[*]} " == *" --drafts "* ]]; then
+  echo "note: on branch '$branch'; _drafts/ lives on the 'drafts' branch, so" >&2
+  echo "      no drafts will appear. Run: git checkout drafts" >&2
+fi
+
 if ! command -v bundle >/dev/null 2>&1; then
   echo "error: bundler not found. See docs/workflow.md for toolchain setup." >&2
   exit 1
