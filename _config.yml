@@ -6,6 +6,30 @@ baseurl: ""
 url: "https://blog.hardwarewrighter.com"
 github_username: hardwarewrighter
 author: Mike Wright
+logo: /images/hardware-wrighter-logo.webp
+
+# Amazon Associates tag. Leave EMPTY until the account exists.
+#
+# While empty: links render untagged and posts show `plain_links_note` instead
+# of the affiliate disclosure --- claiming an affiliate relationship you do not
+# have is itself a false disclosure. Fill this in and every Amazon link in every
+# post gains the tag and the real disclosure automatically.
+amazon_affiliate_tag: ""
+
+# Shown under the parts list once amazon_affiliate_tag is set. Required by FTC
+# guidance and, for Amazon, by the Associates agreement --- which mandates the
+# "As an Amazon Associate I earn from qualifying purchases" sentence verbatim.
+affiliate_disclosure: >-
+  Some links above are affiliate links: if you buy through them I may earn a
+  commission at no extra cost to you. As an Amazon Associate I earn from
+  qualifying purchases. I only link parts I have actually used, and nothing here
+  is sponsored by a manufacturer. See the [disclosure page](/disclosure/) for details.
+
+# Shown while amazon_affiliate_tag is empty.
+plain_links_note: >-
+  Links above go to the exact parts I used. They are not affiliate links and I
+  earn nothing if you buy through them. Nothing here is sponsored. See the
+  [disclosure page](/disclosure/) for details.
 
 # Build settings
 theme: minima
@@ -38,6 +62,7 @@ header_pages:
   - tags.html
   - archive.html
   - search.html
+  - disclosure.markdown
 
 # Default front matter
 defaults:

@@ -20,7 +20,7 @@ permalink: /hardware/
   <div class="category-list">
     {% for hw in all_hardware %}
       {% assign hw_posts = site.posts | where_exp: "p", "p.hardware contains hw" %}
-      <a href="#{{ hw | slugify }}" class="category">{{ hw }} ({{ hw_posts.size }})</a>
+      <a href="#{{ hw | append: "" | slugify }}" class="category">{{ hw }} ({{ hw_posts.size }})</a>
     {% endfor %}
   </div>
 
@@ -28,7 +28,7 @@ permalink: /hardware/
 
   {% for hw in all_hardware %}
     {% assign hw_posts = site.posts | where_exp: "p", "p.hardware contains hw" %}
-    <h2 id="{{ hw | slugify }}">{{ hw }}</h2>
+    <h2 id="{{ hw | append: "" | slugify }}">{{ hw }}</h2>
     <ul class="post-list">
       {% for post in hw_posts %}
         <li>

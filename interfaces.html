@@ -15,7 +15,7 @@ permalink: /interfaces/
   <div class="category-list">
     {% for iface in all_interfaces %}
       {% assign iface_posts = site.posts | where_exp: "p", "p.interfaces contains iface" %}
-      <a href="#{{ iface | slugify }}" class="category">{{ iface }} ({{ iface_posts.size }})</a>
+      <a href="#{{ iface | append: "" | slugify }}" class="category">{{ iface }} ({{ iface_posts.size }})</a>
     {% endfor %}
   </div>
 
@@ -23,7 +23,7 @@ permalink: /interfaces/
 
   {% for iface in all_interfaces %}
     {% assign iface_posts = site.posts | where_exp: "p", "p.interfaces contains iface" %}
-    <h2 id="{{ iface | slugify }}">{{ iface }}</h2>
+    <h2 id="{{ iface | append: "" | slugify }}">{{ iface }}</h2>
     <ul class="post-list">
       {% for post in iface_posts %}
         <li>

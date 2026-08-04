@@ -1555,3 +1555,351 @@ $external-icon-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/200
     }
   }
 }
+
+// ============================================
+// Equipment photo pairs
+// ============================================
+// Side-by-side photos that stack on narrow screens. Plain <img> is not
+// auto-inverted in dark mode (only .post-marker and .post-separator are), so
+// photographs keep their real colors in both themes.
+.equipment-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 2rem 0;
+
+  img {
+    flex: 1 1 300px;
+    min-width: 0;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+
+  figcaption {
+    flex-basis: 100%;
+    font-size: 0.9em;
+    opacity: 0.75;
+    text-align: center;
+  }
+}
+
+// ============================================
+// Photo asides
+// ============================================
+// Transparent-background photos floated into the text. Deliberately no panel,
+// border, or shadow --- the subject sits directly on the page and the text
+// wraps around it. Nothing here sets a background, so a transparent PNG/WebP
+// reads against whichever theme is active.
+.photo-aside,
+.photo-aside-left {
+  width: 170px;
+  max-width: 35%;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+
+  img {
+    display: block;
+    width: 100%;
+    max-height: 220px;
+    height: auto;
+    object-fit: contain;
+    // Never invert a photograph of real hardware for dark mode.
+    filter: none !important;
+  }
+
+  figcaption {
+    margin-top: 0.4rem;
+    font-size: 0.78em;
+    line-height: 1.35;
+    color: var(--text-secondary);
+    text-align: left;
+  }
+}
+
+.photo-aside {
+  float: right;
+  clear: right;
+  margin: 0.3em 0 1.1em 1.6em;
+}
+
+.photo-aside-left {
+  float: left;
+  clear: left;
+  margin: 0.3em 1.6em 1.1em 0;
+}
+
+// Landscape subjects need more width to survive as a thumbnail: at 170px a
+// 16:9 image is under 100px tall and unreadable. The lightbox carries the
+// detail; this keeps the thumbnail worth clicking.
+.photo-aside-wide {
+  width: 240px;
+  max-width: 42%;
+
+  img { max-height: 160px; }
+}
+
+// On wide screens let the asides drift into the margin so they take less of
+// the reading column. Mirrors what .post-aside-left/right already do.
+@media screen and (min-width: 1400px) {
+  .photo-aside { margin-right: -120px; }
+  .photo-aside-left { margin-left: -120px; }
+}
+
+// Below the point where a float leaves a usable text column, stop floating.
+@media screen and (max-width: 700px) {
+  .photo-aside,
+  .photo-aside-left {
+    float: none;
+    width: auto;
+    max-width: 240px;
+    margin: 1.5rem auto;
+  }
+
+  .photo-aside-wide { max-width: 300px; }
+}
+
+// Full-width variant, same borderless treatment.
+.photo-full {
+  margin: 2rem 0;
+  text-align: center;
+
+  img {
+    max-width: 100%;
+    height: auto;
+    filter: none !important;
+  }
+
+  figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+  }
+}
+
+.is-zoomable {
+  cursor: zoom-in;
+
+  &:focus-visible {
+    outline: 2px solid var(--link-color, #1a5490);
+    outline-offset: 2px;
+  }
+}
+
+dialog.lightbox {
+  max-width: 92vw;
+  max-height: 92vh;
+  padding: 1.25rem;
+  border: none;
+  background: transparent;
+  color: #f2f2f5;
+  overflow: auto;
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.82);
+  }
+
+  .lightbox-img {
+    display: block;
+    max-width: 100%;
+    max-height: 78vh;
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+    filter: none !important;
+  }
+
+  .lightbox-caption {
+    max-width: 60ch;
+    margin: 0.85rem auto 0;
+    font-size: 0.9em;
+    line-height: 1.45;
+    text-align: left;
+  }
+
+  .lightbox-close {
+    position: sticky;
+    top: 0;
+    float: right;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.32);
+    }
+  }
+}
+
+
+// ============================================
+// Photo row
+// ============================================
+// In-flow grid of equal thumbnails, for comparing several boards or captures
+// side by side. Borderless like the asides; the lightbox carries the detail.
+.photo-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem 0.9rem;
+  margin: 1.5rem 0;
+
+  figure { margin: 0; }
+
+  img {
+    display: block;
+    width: 100%;
+    height: 110px;
+    object-fit: contain;
+    filter: none !important;
+  }
+
+  figcaption {
+    margin-top: 0.35rem;
+    font-size: 0.78em;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+}
+
+// ============================================
+// Parts and tools (affiliate) section
+// ============================================
+// Visually separated from the post body so it reads as an appendix rather than
+// part of the argument. The disclosure must stay adjacent to the links: FTC
+// guidance calls for it to be clear and near the endorsement, not in a footer.
+.gear {
+  margin: 3rem 0 1rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--border-color);
+
+  h2 {
+    margin-top: 0;
+    font-size: 1.3rem;
+  }
+}
+
+.gear-list {
+  margin: 0 0 1rem;
+  padding-left: 1.2rem;
+
+  li {
+    margin-bottom: 0.4rem;
+    line-height: 1.45;
+  }
+}
+
+.gear-disclosure {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-secondary);
+  border-radius: 6px;
+  font-size: 0.85em;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+// Cross-reference to the canonical tools post, set apart from the parts that
+// are specific to this post.
+.gear-see-also {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-color);
+  list-style: none;
+  padding-left: 0;
+
+  li { font-size: 0.95em; }
+}
+
+// ============================================
+// Warning box
+// ============================================
+// For gotchas that would invalidate results if missed --- distinct from the
+// tan .resource-box, which is for links.
+.warning-box {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  background-color: #fff4e0;
+  border-left: 4px solid #e08a00;
+  border-radius: 0 6px 6px 0;
+
+  p:first-child { margin-top: 0; }
+  p:last-child { margin-bottom: 0; }
+}
+
+[data-theme="dark"] .warning-box {
+  background-color: #33270f;
+  border-left-color: #d99a2b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .warning-box {
+    background-color: #33270f;
+    border-left-color: #d99a2b;
+  }
+}
+
+// Index of bench-section posts on the hardware lab hub.
+.bench-index {
+  li { margin-bottom: 0.9rem; }
+
+  .bench-index-abstract {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.88em;
+    line-height: 1.4;
+    color: var(--text-secondary);
+  }
+}
+
+// Animated thumbnail. Sized exactly like the still images beside it so the
+// staggered layout does not shift when one figure is a video.
+.photo-anim {
+  display: block;
+  width: 100%;
+  max-height: 160px;
+  height: auto;
+  object-fit: contain;
+  cursor: zoom-in;
+  background: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--link-color, #1a5490);
+    outline-offset: 2px;
+  }
+}
+
+.photo-aside .photo-anim,
+.photo-aside-left .photo-anim {
+  max-height: 220px;
+}
+
+.photo-aside-wide .photo-anim {
+  max-height: 160px;
+}
+
+// Video shown in the lightbox. Matches .lightbox-img so switching between a
+// still and an animation does not change the dialog's shape.
+dialog.lightbox .lightbox-video {
+  display: block;
+  max-width: 100%;
+  max-height: 78vh;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  background: transparent;
+}
+
+dialog.lightbox [hidden] {
+  display: none !important;
+}

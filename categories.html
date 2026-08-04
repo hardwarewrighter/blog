@@ -10,14 +10,14 @@ permalink: /categories/
 
   <div class="category-list">
     {% for category in sorted_categories %}
-      <a href="#{{ category[0] | slugify }}" class="category">{{ category[0] }} ({{ category[1].size }})</a>
+      <a href="#{{ category[0] | append: "" | slugify }}" class="category">{{ category[0] }} ({{ category[1].size }})</a>
     {% endfor %}
   </div>
 
   <hr>
 
   {% for category in sorted_categories %}
-    <h2 id="{{ category[0] | slugify }}">{{ category[0] }}</h2>
+    <h2 id="{{ category[0] | append: "" | slugify }}">{{ category[0] }}</h2>
     <ul class="post-list">
       {% for post in category[1] %}
         <li>

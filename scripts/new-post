@@ -16,10 +16,12 @@ fi
 
 title="$1"
 
-# Lowercase, strip anything that is not alphanumeric or space, spaces to dashes.
+# Lowercase, spaces to dashes, drop anything else. Hyphens are kept: part
+# numbers like COR24-TB and FT232-RL are the norm here, and stripping the hyphen
+# turns them into unsearchable mush.
 slug=$(printf '%s' "$title" \
   | tr '[:upper:]' '[:lower:]' \
-  | sed -E 's/[^a-z0-9 ]//g; s/ +/-/g; s/^-+|-+$//g')
+  | sed -E 's/[^a-z0-9 -]//g; s/ +/-/g; s/-+/-/g; s/^-+|-+$//g')
 
 if [[ -z "$slug" ]]; then
   echo "error: title produced an empty slug" >&2

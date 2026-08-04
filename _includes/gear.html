@@ -1,0 +1,117 @@
+{%- comment -%}
+  Parts-and-tools section, rendered at the foot of any post that declares a
+  `gear:` list in its front matter.
+
+  Two things here are requirements rather than style choices:
+
+  1. The disclosure. US FTC guidance requires affiliate relationships to be
+     disclosed clearly and near the links --- not buried in a footer or a
+     separate page. Amazon's Associates agreement additionally requires
+     specific wording. `site.affiliate_disclosure` carries it, so it cannot be
+     forgotten on an individual post.
+
+  2. rel="sponsored nofollow". Google requires paid and affiliate links to be
+     marked; unmarked affiliate links are a manual-action risk for the whole
+     site. Set once here so no post has to remember it.
+
+  Front matter shape:
+
+    gear:
+      - name: "FT232H breakout board"
+        note: "The only adapter that held 921600 with RTS/CTS"
+        url: "https://..."
+      - name: "Bench DMM"
+        note: "Not affiliate-linked, just what I use"
+        url: "https://..."
+        affiliate: false
+{%- endcomment -%}
+
+{%- assign has_gear = false -%}
+{%- if page.gear and page.gear.size > 0 -%}{%- assign has_gear = true -%}{%- endif -%}
+{%- if page.gear_see_also and page.gear_see_also.size > 0 -%}{%- assign has_gear = true -%}{%- endif -%}
+
+{%- if has_gear -%}
+<section class="gear">
+  <h2>{{ page.gear_title | default: "Parts and Tools in This Post" }}</h2>
+
+  {%- if page.gear_intro %}
+  <p>{{ page.gear_intro }}</p>
+  {%- endif %}
+
+  {%- if page.gear and page.gear.size > 0 %}
+  <ul class="gear-list">
+    {%- for item in page.gear %}
+    {%- comment -%}
+      Append the Associates tag to Amazon links, but only once the tag exists.
+      Doing it here means the stored URLs stay clean and the tag lives in one
+      place. `rel` follows suit: "sponsored" is only accurate when there is
+      actually a commercial relationship.
+    {%- endcomment -%}
+    {%- assign href = item.url -%}
+    {%- assign is_affiliate = false -%}
+    {%- if item.url and item.affiliate != false and site.amazon_affiliate_tag and site.amazon_affiliate_tag != "" -%}
+      {%- if item.url contains "amazon." -%}
+        {%- if item.url contains "?" -%}
+          {%- assign href = item.url | append: "&tag=" | append: site.amazon_affiliate_tag -%}
+        {%- else -%}
+          {%- assign href = item.url | append: "?tag=" | append: site.amazon_affiliate_tag -%}
+        {%- endif -%}
+        {%- assign is_affiliate = true -%}
+      {%- endif -%}
+    {%- endif -%}
+    <li>
+      {%- if item.url -%}
+        {%- if is_affiliate -%}
+      <a href="{{ href }}" rel="sponsored nofollow noopener" target="_blank">{{ item.name }}</a>
+        {%- else -%}
+      <a href="{{ href }}" rel="nofollow noopener" target="_blank">{{ item.name }}</a>
+        {%- endif -%}
+      {%- else -%}
+      <strong>{{ item.name }}</strong>
+      {%- endif -%}
+      {%- if item.note %} &mdash; {{ item.note }}{% endif -%}
+    </li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+
+  {%- comment -%}
+    Shared tools live in one canonical post (the lab tour) rather than being
+    re-listed in every post that uses them. Reference it by slug and the title
+    and URL resolve themselves, so nothing breaks if the permalink changes.
+
+      gear_see_also:
+        - post: my-hardware-lab
+          text: "Bench tools --- meters, scope, soldering, logic analyzer"
+
+    If the target post is not published yet the text still renders, without a
+    link, so a draft cross-reference degrades quietly instead of 404ing.
+  {%- endcomment -%}
+  {%- if page.gear_see_also and page.gear_see_also.size > 0 %}
+  <ul class="gear-list gear-see-also">
+    {%- for ref in page.gear_see_also %}
+    {%- assign target = site.posts | where: "slug", ref.post | first %}
+    <li>
+      {%- if target %}
+      <a href="{{ target.url | relative_url }}">{{ ref.text | default: target.title }}</a>
+      {%- elsif ref.url %}
+      <a href="{{ ref.url }}">{{ ref.text }}</a>
+      {%- else %}
+      {{ ref.text }} <em>(post not published yet)</em>
+      {%- endif %}
+    </li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+
+  {%- comment -%}
+    Only claim an affiliate relationship once one exists. A disclosure that
+    overstates is as much a problem as one that is missing.
+  {%- endcomment -%}
+  {%- if site.amazon_affiliate_tag and site.amazon_affiliate_tag != "" and site.affiliate_disclosure %}
+  <div class="gear-disclosure">{{ site.affiliate_disclosure | markdownify }}</div>
+  {%- elsif site.plain_links_note %}
+  <div class="gear-disclosure">{{ site.plain_links_note | markdownify }}</div>
+  {%- endif %}
+</section>
+{%- endif -%}

@@ -27,13 +27,37 @@ issues.
 
 ## About the Author
 
+<div class="author-section" markdown="1">
+
+<img src="/images/mike-wright-avatar.webp" class="about-avatar no-invert" alt="Mike Wright">
+
 Mike Wright is a software engineer with over four decades of experience, from
 mainframe operating systems at IBM to modern AI-assisted development in Rust.
 Hardware Wrighter is where the work that involves a soldering iron, a logic
 analyzer, or an oscilloscope gets written down.
 
-<!-- TODO: replace with your own bio and a photo. Drop the image in
-     assets/images/site/ and reference it as /assets/images/site/<name>. -->
+</div>
+
+<style>
+.author-section {
+  display: flow-root; /* Contains the avatar float locally so it does not leak
+                         into the next section. */
+}
+
+.about-avatar {
+  float: left;
+  width: 150px;
+  margin: 0 1.5rem 1rem 0;
+}
+
+@media (max-width: 480px) {
+  .about-avatar {
+    float: none;
+    display: block;
+    margin: 0 auto 1rem auto;
+  }
+}
+</style>
 
 ## How This Site Is Organized
 

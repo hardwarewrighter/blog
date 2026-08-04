@@ -52,6 +52,24 @@ for f in "${posts[@]}"; do
   if [[ -n "$fm_time" && "$fm_time" > "00:20:00" ]]; then
     warn "$base: time $fm_time is after the 00:20 publish cron; it will go live a day late"
   fi
+
+  # An unquoted numeric list entry parses as an Integer, which breaks the build
+  # in two non-obvious ways: `slugify` calls gsub on it, and `site.tags | sort`
+  # cannot compare an Integer key against String keys. Baud rates and bare part
+  # numbers hit this constantly, so catch it here rather than in a Liquid trace.
+  for field in tags categories hardware interfaces; do
+    line=$(fm "$field" "$f")
+    [[ -n "$line" ]] || continue
+    stripped=${line//[\[\]]/}
+    IFS=',' read -ra items <<< "$stripped"
+    for item in "${items[@]}"; do
+      item="${item#"${item%%[![:space:]]*}"}"
+      item="${item%"${item##*[![:space:]]}"}"
+      if [[ "$item" =~ ^[0-9]+$ ]]; then
+        err "$base: $field entry $item is numeric and unquoted; write it as \"$item\""
+      fi
+    done
+  done
 done
 
 echo

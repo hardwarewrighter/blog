@@ -192,14 +192,14 @@ layout: default
           {%- if post.hardware.size > 0 -%}
             <span class="post-hardware">
               {%- for item in post.hardware -%}
-                <a href="{{ '/hardware/' | relative_url }}#{{ item | slugify }}" class="tag">{{ item }}</a>
+                <a href="{{ '/hardware/' | relative_url }}#{{ item | append: "" | slugify }}" class="tag">{{ item }}</a>
               {%- endfor -%}
             </span>
           {%- endif -%}
           {%- if post.interfaces.size > 0 -%}
             <span class="post-interfaces">
               {%- for item in post.interfaces -%}
-                <a href="{{ '/interfaces/' | relative_url }}#{{ item | slugify }}" class="tag">{{ item }}</a>
+                <a href="{{ '/interfaces/' | relative_url }}#{{ item | append: "" | slugify }}" class="tag">{{ item }}</a>
               {%- endfor -%}
             </span>
           {%- endif -%}

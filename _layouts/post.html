@@ -12,28 +12,28 @@ layout: default
       {%- if page.categories.size > 0 -%}
         <span class="post-categories">
           {%- for category in page.categories -%}
-            <a href="{{ '/categories/' | relative_url }}#{{ category | slugify }}" class="category">{{ category }}</a>
+            <a href="{{ '/categories/' | relative_url }}#{{ category | append: "" | slugify }}" class="category">{{ category }}</a>
           {%- endfor -%}
         </span>
       {%- endif -%}
       {%- if page.hardware.size > 0 -%}
         <span class="post-hardware">
           {%- for hw in page.hardware -%}
-            <a href="{{ '/hardware/' | relative_url }}#{{ hw | slugify }}" class="tag">{{ hw }}</a>
+            <a href="{{ '/hardware/' | relative_url }}#{{ hw | append: "" | slugify }}" class="tag">{{ hw }}</a>
           {%- endfor -%}
         </span>
       {%- endif -%}
       {%- if page.interfaces.size > 0 -%}
         <span class="post-interfaces">
           {%- for iface in page.interfaces -%}
-            <a href="{{ '/interfaces/' | relative_url }}#{{ iface | slugify }}" class="tag">{{ iface }}</a>
+            <a href="{{ '/interfaces/' | relative_url }}#{{ iface | append: "" | slugify }}" class="tag">{{ iface }}</a>
           {%- endfor -%}
         </span>
       {%- endif -%}
       {%- if page.tags.size > 0 -%}
         <span class="post-tags">
           {%- for tag in page.tags -%}
-            <a href="{{ '/tags/' | relative_url }}#{{ tag | slugify }}" class="tag">{{ tag }}</a>
+            <a href="{{ '/tags/' | relative_url }}#{{ tag | append: "" | slugify }}" class="tag">{{ tag }}</a>
           {%- endfor -%}
         </span>
       {%- endif -%}
@@ -48,6 +48,8 @@ layout: default
   <div class="post-content e-content" itemprop="articleBody">
     {{ content }}
   </div>
+
+  {%- include gear.html -%}
 
   {%- comment -%}
     Posts sharing a `hardware:` value form a collection with no manual curation
@@ -69,7 +71,7 @@ layout: default
           {%- endunless -%}
         {%- endfor -%}
       </ul>
-      <p><a href="{{ '/hardware/' | relative_url }}#{{ primary | slugify }}">All {{ primary }} posts &rarr;</a></p>
+      <p><a href="{{ '/hardware/' | relative_url }}#{{ primary | append: "" | slugify }}">All {{ primary }} posts &rarr;</a></p>
     </div>
     {%- endif -%}
   {%- endif -%}
